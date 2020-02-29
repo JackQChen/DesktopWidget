@@ -191,8 +191,6 @@ namespace DesktopWidget
         Config config = new Config() { CityCode = "101110101" };
         Dictionary<string, string> dicWeather = new Dictionary<string, string>()
         {
-            { "date","--"},
-            { "time","--"},
             { "weather","--"},
             { "temp","--"},
             { "wind","--"},
