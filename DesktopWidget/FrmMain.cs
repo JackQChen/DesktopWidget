@@ -249,8 +249,12 @@ namespace DesktopWidget
 
         private void GetWeather()
         {
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create($"http://d1.weather.com.cn/sk_2d/101110101.html?_={DateTime.Now.ToLinuxTime()}");
-            httpWebRequest.Referer = "http://en.weather.com.cn/weather/101110101.shtml";
+            //xi'an = 101110101
+            //beijing = 101010100
+            //shanghai = 101020100
+            var cityCode = "101110101";
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create($"http://d1.weather.com.cn/sk_2d/{cityCode}.html?_={DateTime.Now.ToLinuxTime()}");
+            httpWebRequest.Referer = $"http://en.weather.com.cn/weather/{cityCode}.shtml";
             httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
             using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
             {
