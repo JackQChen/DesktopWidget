@@ -185,6 +185,10 @@ namespace DesktopWidget
         JavaScriptSerializer jsonConvert = new JavaScriptSerializer();
         Font font;
         string configPath = "";
+        //xi'an = 101110101
+        //beijing = 101010100
+        //shanghai = 101020100 
+        Config config = new Config() { CityCode = "101110101" };
         Dictionary<string, string> dicWeather = new Dictionary<string, string>()
         {
             { "date","--"},
@@ -212,8 +216,8 @@ namespace DesktopWidget
             configPath = Application.StartupPath + "\\dw.dat";
             if (File.Exists(configPath))
             {
-                var location = File.ReadAllText(configPath).Split(',');
-                this.Location = new Point(Convert.ToInt32(location[0]), Convert.ToInt32(location[1]));
+                config = jsonConvert.Deserialize<Config>(File.ReadAllText(configPath));
+                this.Location = config.Location;
             }
             new Thread(() =>
             {
@@ -244,17 +248,14 @@ namespace DesktopWidget
         {
             if (string.IsNullOrEmpty(this.configPath))
                 return;
-            File.WriteAllText(configPath, this.Left + "," + this.Top);
+            this.config.Location = this.Location;
+            File.WriteAllText(configPath, jsonConvert.Serialize(this.config));
         }
 
         private void GetWeather()
         {
-            //xi'an = 101110101
-            //beijing = 101010100
-            //shanghai = 101020100
-            var cityCode = "101110101";
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create($"http://d1.weather.com.cn/sk_2d/{cityCode}.html?_={DateTime.Now.ToLinuxTime()}");
-            httpWebRequest.Referer = $"http://en.weather.com.cn/weather/{cityCode}.shtml";
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create($"http://d1.weather.com.cn/sk_2d/{config.CityCode}.html?_={DateTime.Now.ToLinuxTime()}");
+            httpWebRequest.Referer = $"http://en.weather.com.cn/weather/{config.CityCode}.shtml";
             httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
             using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
             {
@@ -297,6 +298,13 @@ namespace DesktopWidget
         {
             Draw();
         }
+    }
+
+    public class Config
+    {
+        public Point Location { get; set; }
+
+        public string CityCode { get; set; }
     }
 
     public static class Extension
