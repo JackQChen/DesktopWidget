@@ -185,10 +185,10 @@ namespace DesktopWidget
         JavaScriptSerializer jsonConvert = new JavaScriptSerializer();
         Font font;
         string configPath = "";
-        //xi'an = 101110101
+        //xi'an = 101110102
         //beijing = 101010100
         //shanghai = 101020100 
-        Config config = new Config() { CityCode = "101110101" };
+        Config config = new Config() { CityCode = "101110102" };
         Dictionary<string, string> dicWeather = new Dictionary<string, string>()
         {
             { "weather","--"},
@@ -224,13 +224,12 @@ namespace DesktopWidget
                     try
                     {
                         GetWeather();
+                        Thread.Sleep(TimeSpan.FromHours(1));
                     }
                     catch
                     {
                         Thread.Sleep(TimeSpan.FromMinutes(1));
-                        GetWeather();
                     }
-                    Thread.Sleep(TimeSpan.FromHours(1));
                 }
             })
             { IsBackground = true }.Start();
@@ -260,11 +259,11 @@ namespace DesktopWidget
                 using (StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream()))
                 {
                     var strWeather = streamReader.ReadToEnd();
-                    var weather = jsonConvert.Deserialize<Dictionary<string, object>>(strWeather.Substring(strWeather.IndexOf('{')));
-                    dicWeather["weather"] = weather["weathere"].ToString();
-                    dicWeather["temp"] = weather["temp"].ToString();
-                    dicWeather["wind"] = weather["wde"].ToString() + weather["wse"].ToString().Replace("&lt;", "<").Replace("&gt;", ">");
-                    dicWeather["aqi"] = weather["aqi"].ToString();
+                    var weather = jsonConvert.Deserialize<Dictionary<string, string>>(strWeather.Substring(strWeather.IndexOf('{')));
+                    dicWeather["weather"] = weather["weathere"].Substring(0, 1).ToUpper() + weather["weathere"].Substring(1);
+                    dicWeather["temp"] = weather["temp"];
+                    dicWeather["wind"] = weather["wde"] + weather["wse"].Replace("&lt;", "<").Replace("&gt;", ">");
+                    dicWeather["aqi"] = weather["aqi"];
                     httpWebResponse.Close();
                     streamReader.Close();
                 };
@@ -285,7 +284,7 @@ namespace DesktopWidget
             int y = -10;
             foreach (var text in strText.Split('\r'))
             {
-                this.gBmp.DrawString(text, this.font, Brushes.Black, 30, y);
+                this.gBmp.DrawString(text, this.font, Brushes.Black, 25, y);
                 y += 30;
             }
             gBmp.DrawImage(bmpBg, 0, 0, bmp.Width, bmp.Height);
