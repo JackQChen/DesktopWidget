@@ -185,10 +185,10 @@ namespace DesktopWidget
         JavaScriptSerializer jsonConvert = new JavaScriptSerializer();
         Font font;
         string configPath = "";
-        //xi'an = 101110102
+        //xi'an = 101110101
         //beijing = 101010100
         //shanghai = 101020100 
-        Config config = new Config() { CityCode = "101110102" };
+        Config config = new Config() { CityCode = "101110101" };
         Dictionary<string, string> dicWeather = new Dictionary<string, string>()
         {
             { "weather","--"},
